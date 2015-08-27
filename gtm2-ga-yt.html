@@ -34,10 +34,10 @@
 
 	/**
 	 * Load 3 scripts synchronously
-	 *   client.js 	- To get Youtube name corresponding to video id in iframe
-	 *   							See https://developers.google.com/api-client-library/javascript/start/start-js 
+	 *   client.js	- To get Youtube name corresponding to video id in iframe
+	 *								See https://developers.google.com/api-client-library/javascript/start/start-js 
 	 *   iframe_api - To be able to process Youtube video events
-	 *   							see https://developers.google.com/youtube/iframe_api_reference
+	 *								see https://developers.google.com/youtube/iframe_api_reference
 	 *   mainCode		- the main body of code in this Javascript file
 	 */
 	loadScript( 'https://apis.google.com/js/client.js', function () { 
@@ -79,7 +79,7 @@
 
 		/**
 		 * {object} - videoIdNames -	associative array with elements of the
-		 * 														form { videoId : videoName }
+		 *														form { videoId : videoName }
 		 */
 		var videoIdNames = {};
 
@@ -93,7 +93,7 @@
 		 * might create the player objects that you want to display when the page loads.
 		 * See https://developers.google.com/youtube/iframe_api_reference
 		 */
- 		 window.onYouTubeIframeAPIReady = (function() {
+		 window.onYouTubeIframeAPIReady = (function() {
 
 			var cached = window.onYouTubeIframeAPIReady;
 
@@ -169,7 +169,7 @@
 
 					/* 
 					 * Get video title from videoId
-	 				 * {string} v	- video id from iframe src string of Youtube URL 
+					 * {string} v	- video id from iframe src string of Youtube URL 
 					 *
 					 * The associative array videoIdNames maintains videoId:videoTitle pairs.
 					 * The videoTitle can be retrieved from a Youtube API using ajax.
@@ -257,19 +257,19 @@
 		 *
 		 * Recommended format for Youtube iframes is...
 		 *
-		 * 		<iframe width="560" height="315"
-		 * 		  src="https://www.youtube.com/embed/uGTkFti3BDY"
-		 * 		  frameborder="0" allowfullscreen>
-		 * 		</iframe>
+		 *		<iframe width="560" height="315"
+		 *			src="https://www.youtube.com/embed/uGTkFti3BDY"
+		 *			frameborder="0" allowfullscreen>
+		 *		</iframe>
 		 *
 		 * Note: This script (currently) ignores deprecated method of embedding
 		 * Youtube videos, namely...
 		 *
 		 * <object width="640" height="390">
-  	 *   <param name="movie"
+		 *   <param name="movie"
      *     value="https://www.youtube.com/v/M7lc1UVf-VE?version=3&autoplay=1">
 		 *   </param>
-  	 *   <param name="allowScriptAccess" value="always"></param>
+		 *   <param name="allowScriptAccess" value="always"></param>
      *   <embed src="https://www.youtube.com/v/M7lc1UVf-VE?version=3&autoplay=1"
      *     type="application/x-shockwave-flash"
      *     allowscriptaccess="always"
@@ -292,7 +292,7 @@
 		 * Uses URL parsing methods of anchor tag to process iframe. Adds 
 		 *   enablejsapi=1
 		 * and 
-		 * 	 origin=<url of page hosting this script>
+		 *	 origin=<url of page hosting this script>
 		 * which are required to 
 		 * 
 		 * See - http://www.joezimjs.com/javascript/the-lazy-mans-url-parsing
@@ -305,11 +305,11 @@
 			 * Create a tag - just to be able to use it's url parsing features
 			 *
 			 */
-			var a 			= document.createElement( 'a' );
+			var a				= document.createElement( 'a' );
 
-			a.href 			= youTubeVideo.src,
-			a.hostname 	= 'www.youtube.com';
-			a.protocol 	= document.location.protocol;
+			a.href			= youTubeVideo.src,
+			a.hostname	= 'www.youtube.com';
+			a.protocol	= document.location.protocol;
 
 			/*
 			 * IE10 shim
@@ -396,7 +396,7 @@
 		 * This function "pushes" the following data to the "dataLayer" 
 		 *   'event': 'youtube-event'  - this is fixed to distinguish Youtube events 
 		 *                               from other events on this page
-	 	 *   'action': 'video-playing' - this key/value pair tells the dataLayer 
+		 *   'action': 'video-playing' - this key/value pair tells the dataLayer 
 		 *                               how the user has interacted with the video
 		 *   'label': targetVideoName  - from the youTubeIframe parameter, the 
 		 *                               videoId can be extracted and looked up in
@@ -410,7 +410,7 @@
 
 			var player						= event.target;
 			var targetVideoUrl		= player.getVideoUrl();
-			var targetVideoId  		= targetVideoUrl.match( /[?&]v=([^&#]*)/ )[ 1 ];  // Extract the ID    
+			var targetVideoId			= targetVideoUrl.match( /[?&]v=([^&#]*)/ )[ 1 ];  // Extract the ID    
 			var targetVideoName   = videoIdNames[ targetVideoId ];
 			console.log( 'targetVideo:' + targetVideoId + ' ' + targetVideoName );
 
