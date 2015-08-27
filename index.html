@@ -51,9 +51,41 @@
 <iframe width="560" height="315" src="https://www.youtube.com/embed/iPVK8WdKCsg" frameborder="0" allowfullscreen></iframe>
 
 <h3>
-<a id="creating-pages-manually" class="anchor" href="#creating-pages-manually" aria-hidden="true"><span class="octicon octicon-link"></span></a>Creating pages manually</h3>
+<a id="Overview" class="anchor" href="#overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview</h3>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<h4>>Google Analytics</h4>
+<p>
+A small bit of Javascript can be placed on a page to allow Google Analytics (GA) (www.google.ie/analytics) to track the page. We will only be using the Tracking Id from this code here.
+</p>
+
+<h4>Google Tag Manager</h4>
+<p>
+Google have created Google Tag Manager (GTM) (www.google.ie/tagmanager) as an accompaniment to GA which allows non developers to be better able control what GA monitors without having to continuously request assistance from a developer. A small piece of Javascript code must be added to each page using GTM just as you would do for Google Analytics.
+</p>
+
+<p>
+This tutorial specifically focuses on monitoring Youtube video events such as playing, paused, stopped, buffering, etc. But it is obviously possible to monitor other events, for example it is possible to monitor clicks on tabs on a page that load ajax content onto the same page. 
+</p>
+
+<h4>Custom Javascript</h4>
+<p>
+In addition to the GTM code above, a non-developer can add some custom code (by just cutting and pasting) that listens for YouTube events. This code then passes the events to a concept called the "data layer". GTM manager can "read" these events in the data layer and, in turn, pass them on to GA to monitor. This code has been tested with Chrome. Please report how it works for other browsers - some changes may be necessary.
+</p>
+
+<h4>Google Developer's Console</h4>
+<p>
+We will also use the Google Developer's Console (console.developers.google.com). This is not required for our event tracking as Youtube videos are tracked by their video id, eg. https://www.youtube.com/watch?v=_AhXOcM8Liw. If you click the Youtube link, you'll see that the title of this video is "Cliffs of Moher". 
+</p>
+
+<p>
+We can use some of Google's Youtube Data API v3 to get the title corresponding to this video id. This means that the resulting events can be recorded in GA using the more meaningful title as opposed to the obscure video id. For security and monitoring purposes we have to request access to Google's APIs and we do this using the Google Developer's Console.
+</p>
+
+<h4>Developer vs non developer</h4>
+<p>
+If a Youtube video is to be embedded on a page, the web developer will be doing that anyway.
+The GTM code has to be put on pages to monitor events (and more) instead of the GA code.
+After that, everything else can be done by a non developer.</p>
 
 <h3>
 <a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
