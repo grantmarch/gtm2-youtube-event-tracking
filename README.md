@@ -7,4 +7,4 @@ This code is based on Lunametrics code (attribution see below), however this cod
 
 For detailed instructions on how to use this code with Google Tag Manager and Google Analytics see [grantmarch.github.io/gtm2-youtube-event-tracking](http://grantmarch.github.io/gtm2-youtube-event-tracking)
 
-This code is adapted from code written by Dan Wilkerson of [Lunametrics](http://www.lunametrics.com) [Lunametrics Github](http://www.lunametrics.com/blog/2015/05/11/updated-youtube-tracking-google-analytics-gtm) [Lunametrics Explanation](http://www.lunametrics.com/blog/2015/05/11/updated-youtube-tracking-google-analytics-gtm) 
+This code is adapted from code written by Dan Wilkerson of [Lunametrics](http://www.lunametrics.com) [Github](http://www.lunametrics.com/blog/2015/05/11/updated-youtube-tracking-google-analytics-gtm) [Explanation](http://www.lunametrics.com/blog/2015/05/11/updated-youtube-tracking-google-analytics-gtm) 
