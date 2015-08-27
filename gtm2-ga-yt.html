@@ -1,0 +1,472 @@
+<script>
+
+/*
+ * gtm2-ga-yt.html
+ *
+ *   gtm2 - Google Tag Manger
+ *   ga   - Google Analytics
+ *   yt   - YouTube
+ */
+
+'use strict';
+
+
+/**
+ * Self invoking function to isolate scope.
+ * Wraps plain Youtube iframes with parameters suitable for event generation
+ * {object} document - current document object
+ * {object} window - current window object
+ * {object} config - configuration object - TODO: this is not used at the moment
+ */
+(function( document, window, config ) {
+
+	/*
+	 * The api key is got from 
+	 *   https://console.developers.google.com/project
+	 * To make it easy to use for non-developers, Google Tag Managers are
+	 * requested to make a variable tag, YoutubeAPiKeyVar, into which
+	 * they should put the api key. This is then referenced here inside
+	 * the double braces - a special feature of Google Tag Manager.
+
+	 Note: there should be no spaces between the variable name and the braces
+	 */
+	var apiKey = {{YoutubeApiKeyVar}};
+
+	/**
+	 * Load 3 scripts synchronously
+	 *   client.js 	- To get Youtube name corresponding to video id in iframe
+	 *   							See https://developers.google.com/api-client-library/javascript/start/start-js 
+	 *   iframe_api - To be able to process Youtube video events
+	 *   							see https://developers.google.com/youtube/iframe_api_reference
+	 *   mainCode		- the main body of code in this Javascript file
+	 */
+	loadScript( 'https://apis.google.com/js/client.js', function () { 
+
+		loadScript( 'https://www.youtube.com/iframe_api', mainCode );
+
+	});
+
+
+	/**
+	 * Create a script element in which to load Javascript at url and, once it has
+	 * loaded, invoke callback function
+	 * {string} url				- url pointing to a Javascript resource
+	 * {function} callback	- function to be invoked after script has been loaded
+	 */
+	function loadScript( url, callback ) {
+
+		var head = document.getElementsByTagName('head')[0];
+		var script = document.createElement('script');
+		script.type = 'text/javascript';
+		script.src = url;
+
+		// There are several events for cross browser compatibility.
+		script.onreadystatechange = callback;
+		script.onload = callback;
+
+		// Fire the loading
+		head.appendChild(script);
+
+	}
+
+
+	/**
+	 * Function to wrap main code of the Javascript file so that it can be 
+	 * synchronoulsy loaded AFTER the pre-requisite Javascript files are loaded.
+	 */ 
+  function mainCode() {
+
+
+		/**
+		 * {object} - videoIdNames -	associative array with elements of the
+		 * 														form { videoId : videoName }
+		 */
+		var videoIdNames = {};
+
+
+		/**
+		 * Set onYouTubeIframeAPIReady
+		 *
+		 * onYouTubeIframeAPIReady – The API will call this function when the page
+		 * has finished downloading the JavaScript for the player API, which
+		 * enables you to then use the API on your page. Thus, this function
+		 * might create the player objects that you want to display when the page loads.
+		 * See https://developers.google.com/youtube/iframe_api_reference
+		 */
+ 		 window.onYouTubeIframeAPIReady = (function() {
+
+			var cached = window.onYouTubeIframeAPIReady;
+
+			return function() {
+					
+			 /*
+			 if( cached ) {
+
+					cached.apply(this, arguments);
+
+				}
+				*/
+
+				// This script won't work on IE 6 or 7, so we bail at this point if we detect that UA
+				if( !navigator.userAgent.match( /MSIE [67]\./gi ) ) {
+
+					init(); 
+			
+				}
+
+			}; // return function() 
+		
+		})(); // window.onYouTubeIframeAPIReady
+
+
+		/**
+		 *
+		 * Converts embedded Youtube iframes into a form that can generate events
+		 *
+		 */
+		function init() {
+
+			var iframes = document.getElementsByTagName('iframe');
+
+			digestPotentialVideos(iframes);
+
+		}
+
+
+		/* 
+		 * {object} - potentialVideos -	array of iframes from page containing this
+		 *                              script
+		 *
+		 * Traverses all iframes, identifies those that are Youtube iframes,
+		 * adds attributes to allow Youtube event generation and 
+		 * sets up event listeners. The video id in the Youtube URL is used to 
+		 * query a Google Youtube API to get the corresponding video title.
+		 *
+		 *
+		 */
+		function digestPotentialVideos( potentialVideos ) {
+
+			for(var i=0; i < potentialVideos.length; i++) {
+
+				var isYouTubeVideo = checkIfYouTubeVideo( potentialVideos[i] );
+
+				if ( isYouTubeVideo ) {
+					
+					/*
+					 * Add attributes to iframe element to allow Youtube event generation
+					 *
+					 */
+					var normalizedYouTubeIframe = normalizeYouTubeIframe( potentialVideos[i] );
+
+					/*
+					 * Add listener for Youtube events
+					 *
+					 */
+					addYouTubeEvents( normalizedYouTubeIframe );
+					
+					var videoId = normalizedYouTubeIframe.src.match( /embed\/([^?&#]*)/ )[ 1 ]; 
+					console.log( 'Video id: ' + videoId );
+
+					/* 
+					 * Get video title from videoId
+	 				 * {string} v	- video id from iframe src string of Youtube URL 
+					 *
+					 * The associative array videoIdNames maintains videoId:videoTitle pairs.
+					 * The videoTitle can be retrieved from a Youtube API using ajax.
+					 * As an ajax request is made for each Youtube iframe and the results need
+					 * to be "remembered", getTitle forms a closure that remembers the assoc
+					 * array key parameter to getTitle, v, so the result can be assigned to
+					 * the correct assoc array element.
+					 *
+					 */
+					function getTitle( v )  { 
+
+
+						/*
+						 * Sets the API key for the application, which can be found in the Developer Console.
+						 * See - https://developers.google.com/api-client-library/javascript/reference/referencedocs
+						 *
+						 */
+						gapi.client.setApiKey(apiKey);
+
+						/*
+						 * Plain ajax request
+						 *
+						 */
+						var xmlhttp;
+
+						if (window.XMLHttpRequest)
+							{// code for IE7+, Firefox, Chrome, Opera, Safari
+								xmlhttp=new XMLHttpRequest();
+							}
+						else
+							{// code for IE6, IE5
+								xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+							}
+
+						xmlhttp.onreadystatechange=function()
+							{
+								if (xmlhttp.readyState==4 && xmlhttp.status==200)
+								{
+									/*
+									 * The ajax response is in the form...
+									 * {
+									 *		 "items": [
+									 *			{
+									 *			 "snippet": {
+									 *				"title": "Youtube title is here"
+									 *			 }
+									 *			}
+									 *		 ]
+									 *		}
+									 *
+									 */
+									var x = JSON.parse(xmlhttp.responseText);
+									videoIdNames[ v ] = x.items[0].snippet.title;
+
+									console.log( 'Logging object: ' + v );
+									console.log( x.items[0].snippet.title );
+								}
+							}
+						/*
+						 * Ajax request for Youtube video title corresponding to video id 
+						 * that was scraped from iframe
+						 * See - https://developers.google.com/youtube/v3/getting-started
+						 *
+						 */
+						xmlhttp.open( "GET", "https://www.googleapis.com/youtube/v3/videos?id=" +
+							videoId +
+							"&key=" + apiKey + "&fields=items(snippet(title))&part=snippet", true );
+						xmlhttp.send();
+
+					} // getName
+
+					getTitle( videoId );
+
+
+				}; // if (isYouTubeVideo)
+
+			} // for loop
+
+		} // digestPotentialVideos
+
+
+		/*
+		 * {string} - potentialYouTubeVideo -	src string from iframe
+		 * Checks to see if src string is a Youtube URL
+		 *
+		 * Recommended format for Youtube iframes is...
+		 *
+		 * 		<iframe width="560" height="315"
+		 * 		  src="https://www.youtube.com/embed/uGTkFti3BDY"
+		 * 		  frameborder="0" allowfullscreen>
+		 * 		</iframe>
+		 *
+		 * Note: This script (currently) ignores deprecated method of embedding
+		 * Youtube videos, namely...
+		 *
+		 * <object width="640" height="390">
+  	 *   <param name="movie"
+     *     value="https://www.youtube.com/v/M7lc1UVf-VE?version=3&autoplay=1">
+		 *   </param>
+  	 *   <param name="allowScriptAccess" value="always"></param>
+     *   <embed src="https://www.youtube.com/v/M7lc1UVf-VE?version=3&autoplay=1"
+     *     type="application/x-shockwave-flash"
+     *     allowscriptaccess="always"
+     *     width="640" height="390">
+		 *	 </embed>
+		 *  </object>
+		 */
+		function checkIfYouTubeVideo( potentialYouTubeVideo ) {
+
+			var  potentialYouTubeVideoSrc = potentialYouTubeVideo.src || '';
+
+			return ( potentialYouTubeVideoSrc.indexOf( 'youtube.com/embed/') > -1 ); 
+
+		}
+
+
+		/*
+		 * {object} youTubeVideo - single Youtube iframe object
+		 *
+		 * Uses URL parsing methods of anchor tag to process iframe. Adds 
+		 *   enablejsapi=1
+		 * and 
+		 * 	 origin=<url of page hosting this script>
+		 * which are required to 
+		 * 
+		 * See - http://www.joezimjs.com/javascript/the-lazy-mans-url-parsing
+		 *     - https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement 
+		 *
+		 */
+		function normalizeYouTubeIframe( youTubeVideo ) {
+
+			/*
+			 * Create a tag - just to be able to use it's url parsing features
+			 *
+			 */
+			var a 			= document.createElement( 'a' );
+
+			a.href 			= youTubeVideo.src,
+			a.hostname 	= 'www.youtube.com';
+			a.protocol 	= document.location.protocol;
+
+			/*
+			 * IE10 shim
+			 * TODO: This code has not been tested with IE
+			 *
+			 */
+			var tmpPathname = a.pathname.charAt( 0 ) === '/' ? a.pathname : '/' + a.pathname; 
+			a.pathname = tmpPathname;
+
+			/*
+			 * '%2F' = forwards slash
+			 *
+			 */
+			var origin = window.location.protocol +
+				'%2F%2F' +
+				window.location.hostname +
+				(window.location.port ? ':' + window.location.port : '');
+
+			/*
+			 * Enable Javascript interaction with Youtube video and set origin
+			 * See - https://developers.google.com/youtube/iframe_api_reference
+			 *       "As an extra security measure, you should also include the
+			 *       origin parameter to the URL, specifying the URL scheme
+			 *       (http:// or https://) and full domain of your host page as
+			 *       the parameter value. While origin is optional, including it
+			 *       protects against malicious third-party JavaScript being
+			 *       injected into your page and hijacking control of your
+			 *       YouTube player."
+			 *
+			 */
+			a.search = 'enablejsapi=1' + '&origin=' + origin;
+
+			if( youTubeVideo.src !== a.href + a.hash ) {
+			
+				youTubeVideo.src = a.href + a.hash;
+
+			}
+
+			return youTubeVideo;
+
+		}
+
+
+
+
+		/*
+		 * {object} youTubeIframe - single Youtube iframe object
+		 *
+		 * Set up event monitoring for youTubeIframe using YT object 
+		 * which is from https://www.youtube.com/iframe_api
+		 *
+		 */
+		function addYouTubeEvents( youTubeIframe ) {
+
+			youTubeIframe.pauseFlag = false;
+
+			new YT.Player( youTubeIframe, {
+
+				events: {
+
+					onStateChange: function( evt ) {
+
+						onStateChangeHandler( evt, youTubeIframe );
+
+					}
+
+				}
+
+			});
+
+		}
+
+
+
+		
+		/* 
+		 * {object} event         - object with details of the current event
+		 * {object} youTubeIframe - Youtube iframe object
+		 *
+		 * onStateChangeHandler is called with the event details and youTubeIframe
+		 * details when a user interacts with a Youtube video, eg. pressing play,
+		 * pause, etc
+		 *
+		 * This function "pushes" the following data to the "dataLayer" 
+		 *   'event': 'youtube-event'  - this is fixed to distinguish Youtube events 
+		 *                               from other events on this page
+	 	 *   'action': 'video-playing' - this key/value pair tells the dataLayer 
+		 *                               how the user has interacted with the video
+		 *   'label': targetVideoName  - from the youTubeIframe parameter, the 
+		 *                               videoId can be extracted and looked up in
+		 *                               the videoIdNames assoc array
+		 *
+		 * This data, having been "pushed to the dataLayer", can configured using
+		 * Google Tag Manager and monitored in Google Analytics.
+		 * 
+		 */
+		function onStateChangeHandler( event, youTubeIframe ) {
+
+			var player						= event.target;
+			var targetVideoUrl		= player.getVideoUrl();
+			var targetVideoId  		= targetVideoUrl.match( /[?&]v=([^&#]*)/ )[ 1 ];  // Extract the ID    
+			var targetVideoName   = videoIdNames[ targetVideoId ];
+			console.log( 'targetVideo:' + targetVideoId + ' ' + targetVideoName );
+
+			switch( event.data ) {
+				case YT.PlayerState.ENDED:
+					dataLayer.push({
+						'event': 'youtube-event',
+						'action': 'video-ended',
+						'label': targetVideoName
+					});
+					break;
+				case YT.PlayerState.PLAYING:
+					console.log( 'Playing: ');
+					dataLayer.push({
+						'event': 'youtube-event',
+						'action': 'video-playing',
+						'label': targetVideoName
+					});
+					break;
+				case YT.PlayerState.PAUSED:
+					console.log( 'Paused: ');
+					dataLayer.push({
+						'event': 'youtube-event',
+						'action': 'video-paused',
+						'label': targetVideoName
+					});
+					break;
+				case YT.PlayerState.BUFFERING:
+					dataLayer.push({
+						'event': 'youtube-event',
+						'action': 'video-buffering',
+						'label': targetVideoName
+					});
+					break;
+				case YT.PlayerState.CUED:
+					dataLayer.push({
+						'event': 'youtube-event',
+						'action': 'video-cued',
+						'label': targetVideoName
+					});
+					break;
+				default:
+					dataLayer.push({
+						'event': 'youtube-event',
+						'action': 'unknown-status',
+						'label': 'none'
+					});
+					break;
+			};
+		}
+
+	} // function mainCode
+
+
+
+})(document, window, {});
+
+
+</script>
