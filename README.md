@@ -23,3 +23,6 @@ This code is adapted from code written by [Sayf Sharif](https://twitter.com/sayf
 
 [Google Developers: YouTube Data API](https://developers.google.com/youtube/v3/getting-started)
 
+## License
+
+See License.md file - Creative Commons 4.0
