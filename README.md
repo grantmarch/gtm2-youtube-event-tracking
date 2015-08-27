@@ -13,7 +13,7 @@ For detailed instructions on how to use this code with Google Tag Manager and Go
 
 ## Attribution
 
-This code is adapted from code written by [Sayf Sharif](https://twitter.com/sayfsharif) and [Dan Wilkerson](https://twitter.com/notdanwilkerson)  of [Lunametrics](http://www.lunametrics.com) [Github](http://www.lunametrics.com/blog/2015/05/11/updated-youtube-tracking-google-analytics-gtm) [Explanation](http://www.lunametrics.com/blog/2015/05/11/updated-youtube-tracking-google-analytics-gtm) 
+This code is adapted from code written by [Sayf Sharif](https://twitter.com/sayfsharif) and [Dan Wilkerson](https://twitter.com/notdanwilkerson)  of [Lunametrics](http://www.lunametrics.com) [Github](https://github.com/lunametrics/youtube-google-analytics) [Explanation](http://www.lunametrics.com/blog/2015/05/11/updated-youtube-tracking-google-analytics-gtm) 
 
 ## References
 
