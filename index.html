@@ -281,21 +281,78 @@ Tags &lt; New &lt; Custom HTML Tag (look for it!) &lt; Continue &lt; Configure T
 Finally we tell GTM which pages on our website we would like to have this Javascript inserted. For now let's just say we want it on every page. GTM uses the terminology to "fire" this Javascript on all pages. Save your tag.
 </p>
 
-<img src="sc-images/230-fire-all-pages.png">
-
-<img src="sc-images/xxx.png">
-
 <h3>
-<a id="xxx" class="anchor" href="#xxx" aria-hidden="true"><span class="octicon octicon-link"></span></a>xxx</h3>
+<a id="checking-your-gtm-set-up-so-far" class="anchor" href="#checking-your-gtm-set-up-so-far" aria-hidden="true"><span class="octicon octicon-link"></span></a>Checking Your GTM Set Up So Far</h3>
 
-<p>text
+<p>
+These changes that we've made in GTM are not "live". We have to "Publish" them for this to be the case. When changes are published GTM checks what you've done and will highlight any errors it may encounter. Publish your changes from time to time to catch any errors. Do so now.
 </p>
 
-<img src="sc-images/xxx.png">
+<img src="sc-images/240-publish.png">
 
+<h3>
+<a id="create-youtubeeventtrig-trigger" class="anchor" href="#create-youtubeeventtrig-trigger" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create YouTubeEventTrig trigger</h3>
 
-<h3>TO BE COMPLETED....</h3>
-	
+<p>
+Triggers &gt; New
+</p>
+
+<img src="sc-images/250-youtube-event-trig.png">
+
+<h3>
+<a id="create-youtubeactionvar-data-layer-variable" class="anchor" href="#create-youtubeactionvar-data-layer-variable" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create YouTubeActionVar Data Layer Variable</h3>
+
+<p>
+Variables &gt; User-Defined Variables &gt; New &gt; Type: Data Layer variable &gt; Configure variable &gt; Data Layer Variable Name: action
+</p>
+
+<img src="sc-images/260-action-var.png">
+
+<h3>
+<a id="create-youtubelabelvar-data-layer-variable" class="anchor" href="#create-youtubelabelvar-data-layer-variable" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create YouTubeLabelVar Data layer Variable</h3>
+
+<p>
+As for the YouTubeActionVar you just created - but this time the Data Layer Variable Name is label.
+</p>
+
+<h3>
+<a id="create-youtube-tag" class="anchor" href="#create-youtube-tag" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create YouTubeTag</h3>
+
+<p>
+This is the glue that combines all the things we've set up in GTM so far and allows events coming in from our Javascript code to be passed on to GA.
+</p>
+
+<p>
+Tags &gt; New &gt; Choose Product: Google Analytics &gt; Choose a Tag Type: Universal Analytics &gt; Configure Tag
+</p>
+
+<p>
+Configure the tag as in the following image. Note we are making use here of all our variables. You can leave all the other items in the Configure block with their default values.
+</p>
+
+<p>
+Once the Configure block is completed, click Continue.
+</p>
+
+<img src="sc-images/270-configure-youtube-tag.png">
+
+<p>
+We want these event values from our Javascript to be passed to GA when our YouTubeEventTrig is set off. 
+</p>
+
+<p>
+Choose Fire On &gt; More and this window will pop up where you can select the YouTubeEventTrig you defined earlier.
+</p>
+
+<img src="sc-images/280-youtueb-event-trig.png">
+
+<h3>
+<a id="remember-to-publish-your-changes" class="anchor" href="#remember-to-publish-your-changes" aria-hidden="true"><span class="octicon octicon-link"></span></a>REMEMBER TO PUBLISH YOUR CHANGES</h3>
+
+<p>
+GA should now be monitoring your YouTube events.
+</p>
+
 <h3>
 <a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
 
