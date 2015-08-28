@@ -180,7 +180,119 @@ Tags (nothing to do with HTML tags) are units that carry out specific functional
 Now we can use some of the many Google APIs that are available to control and manipulate Google Products. In our case, we just want to use the YouTube Data API v3. Click on APIs and auth > APIs and enter Youtube in search box and click on YouTube Data API v3.
 </p>
 
-<img src="sc-images/080-api-console.png">
+<p>
+In the resulting screen click "Enable API" (not shown here). Before we can use the YouTube Data API v3 we have to generate some credentials to allow us access to the API. 
+</p>
+
+<p>
+Google allows 2 kinds of access. If you are just requesting read only access to public data then you only require Public API Access. This is what we will be using. The titles and video id for any YouTube video are in the public domain.
+</p>
+
+<p>
+Just for your information, OAuth access can be set up when you would like to ask for details of a Google user's account that is not publically accessible. You might want to read the contents of a user's Google Drive account. OAuth allows your website to ask the user for permission for you to access their Google Drive. If they say "yes", you can access it and if they say "no", you can't.
+</p>
+
+<p>
+But even with Public API Access, you might be wondering why Google goes to all this bother for us to access data that is in the public domain. One reason, I'm sure there are others, is that every user of Google's APIs is subject to a certain limit on the number of accesses that can be made to an API over a particular course of time. Google that for details of what these limits are. But they seem pretty generous to me.
+</p>
+
+<p>
+Now we can create the API key which our Javascript code can use to allow us access to the YouTube Data API v3. Click Create new Key.
+</p>
+
+<img src="sc-images/110-create-key.png">
+
+<p>
+We are then asked what websites we should allow to use our API key. Enter your website in the following form...  *.somewebsite.com
+</p>
+
+<img src="sc-images/130-referrers-key.png">
+
+<p>
+Now make a note of your API key. We can always come back to the Google Developers Console if we need to look it up at a later stage.
+</p>
+
+
+<img src="sc-images/140-api-key.png">
+
+<p>
+We are now ready to start working with GTM.
+</p>
+
+<h3>
+<a id="create-youtube-apikeyvar" class="anchor" href="#create-youtube-apikeyvar" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create YouTubeApiKeyVar</h3>
+
+<p>
+Click Variables. There are a number of pre-defined variables that you can enable/disable. Just use the default settings for all of these. But we want to create new User-Defined variable for our api key for YouTube  Data Api v3.
+</p>
+
+<img src="sc-images/160-var-for-apikey.png">
+
+<p>
+Give your variable a name, here I've used YouTubeApiKeyVar. Our Api key is not going to change, so we will use the Constant variable type. Click Continue.
+</p>
+
+<img src="sc-images/170-var-for-apikey-choose-type.png">
+
+<p>
+Now cut and paste in your api key from the Google Developer's Console and Create the variable.
+</p>
+
+<img src="sc-images/180-var-for-apikey-config-var.png">
+
+<h3>
+<a id="get-ga-tracking-id" class="anchor" href="#get-ga-tracking-id" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get GA Tracking  Id</h3>
+
+<p>
+To be able to monitor our events with GA we have to connect GTM with GA using our GA tracking id. We will do this later. In the meantime to make things easy for us, go ahead and create another constant variable called GATrackingIdVar. Now we won't have to go routing around GA for this id whenever we need to use it in GTM.
+</p>
+
+<p>
+To remind you, here's how we access the tracking number in GA. Open www.google.ie/analytics in your browser. Admin > Tracking Info > Tracking Code
+</p>
+
+<img src="sc-images/190-tracking-info.png">
+
+<img src="sc-images/200-tracking-id.png">
+
+<h3>
+<a id="create-gatrackingidvar" class="anchor" href="#create-gatrackingidvar" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create GATrackingIdVar</h3>
+
+<p>
+You should now have 2 User-Defined variables.
+</p>
+
+<img src="sc-images/210-user-defined-vars.png">
+
+<h3>
+<a id="insert-youtube-tracking-javascript-using-gayoutubejstag" class="anchor" href="#insert-youtube-tracking-javascript-using-gayoutubejstag" aria-hidden="true"><span class="octicon octicon-link"></span></a>"Insert" YouTube Tracking Javascript Using GAYouTubeJSTag</h3>
+
+<p>
+Tags &lt; New &lt; Custom HTML Tag (look for it!) &lt; Continue &lt; Configure Tag (cut the Javascript from here and paste in the HTML box)
+</p>
+
+<img src="sc-images/220-GAYouTubeJSTag.png">
+
+<p>
+** Purists will note that the Javascript is surrounded by &lt;script&gt;&lt;/script&gt; - so the pasted code is really a HTML script tag with Javascript inside it **
+</p>
+
+<p>
+Finally we tell GTM which pages on our website we would like to have this Javascript inserted. For now let's just say we want it on every page. GTM uses the terminology to "fire" this Javascript on all pages. Save your tag.
+</p>
+
+<img src="sc-images/230-fire-all-pages.png">
+
+<img src="sc-images/xxx.png">
+
+<h3>
+<a id="xxx" class="anchor" href="#xxx" aria-hidden="true"><span class="octicon octicon-link"></span></a>xxx</h3>
+
+<p>text
+</p>
+
+<img src="sc-images/xxx.png">
+
 
 <h3>TO BE COMPLETED....</h3>
 	
