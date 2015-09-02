@@ -23,6 +23,11 @@ This code is adapted from code written by [Sayf Sharif](https://twitter.com/sayf
 
 [Google Developers: YouTube Data API](https://developers.google.com/youtube/v3/getting-started)
 
+## My Additions
+
+Use YouTube Data API v3 to get title for YouTube video id.
+Example of Javascript closures to "remember" a number of asynchronous Ajax calls in a loop.
+
 ## License
 
 See License.md file - Creative Commons 4.0
